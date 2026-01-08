@@ -32,8 +32,19 @@
           ];
 
           postInstall = ''
+            # Some buildGoModule configurations can produce an unexpected
+            # binary name; normalize to $out/bin/smart-suggestion.
+            if [ -e "$out/bin/cmd" ] && [ ! -e "$out/bin/smart-suggestion" ]; then
+              mv "$out/bin/cmd" "$out/bin/smart-suggestion"
+            fi
+
             install -Dm444 ${./smart-suggestion.plugin.zsh} \
               $out/share/zsh/plugins/smart-suggestion/smart-suggestion.plugin.zsh
+
+            # The upstream plugin does not search $PATH; it looks for a
+            # sibling binary named "smart-suggestion".
+            ln -sf $out/bin/smart-suggestion \
+              $out/share/zsh/plugins/smart-suggestion/smart-suggestion
           '';
 
           meta = with lib; {
@@ -58,6 +69,12 @@
           options.programs.smart-suggestion = {
             enable = lib.mkEnableOption "Smart Suggestion zsh plugin";
 
+            autoUpdate = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Whether to enable smart-suggestion's automatic update checks (maps to SMART_SUGGESTION_AUTO_UPDATE).";
+            };
+
             package = lib.mkOption {
               type = lib.types.package;
               default = self.packages.${pkgs.system}.smart-suggestion;
@@ -80,9 +97,14 @@
           config = lib.mkIf cfg.enable {
             home.packages = [ cfg.package ];
 
-            home.sessionVariables = lib.mkIf (cfg.environmentFile == null && cfg.environment != {}) cfg.environment;
+            home.sessionVariables = lib.mkIf (cfg.environmentFile == null) (
+              {
+                SMART_SUGGESTION_AUTO_UPDATE = lib.mkDefault (lib.boolToString cfg.autoUpdate);
+              }
+              // cfg.environment
+            );
 
-            programs.zsh.initExtra = lib.mkAfter ''
+            programs.zsh.initContent = lib.mkAfter ''
               ${lib.optionalString (cfg.environmentFile != null) ''
               if [ -f "${cfg.environmentFile}" ]; then
                 set -a
@@ -91,6 +113,9 @@
                 set +a
               fi
               ''}
+
+              # Disable auto-update by default (upstream default is true).
+              (( ! ''${+SMART_SUGGESTION_AUTO_UPDATE} )) && export SMART_SUGGESTION_AUTO_UPDATE="${lib.boolToString cfg.autoUpdate}"
 
               source ${cfg.package}/share/zsh/plugins/smart-suggestion/smart-suggestion.plugin.zsh
             '';

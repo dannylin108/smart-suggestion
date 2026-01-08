@@ -36,6 +36,52 @@ Make sure you have the following installed:
 - **[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)** plugin
 - An API key for one of the supported AI providers
 
+### Method 0: Home Manager (Nix)
+
+This repository provides:
+
+- A package (Go binary + plugin script)
+- A Home Manager module that installs the package and sources the plugin
+
+Add the module to your Home Manager config and enable it:
+
+```nix
+{
+   inputs.smart-suggestion.url = "github:dannylin108/smart-suggestion";
+
+   outputs = { self, nixpkgs, home-manager, smart-suggestion, ... }:
+      {
+         homeConfigurations.yourUser = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            modules = [
+               smart-suggestion.homeManagerModules.smart-suggestion
+               ({ ... }: {
+                  programs.smart-suggestion.enable = true;
+
+                  # Off by default (upstream defaults to true)
+                  programs.smart-suggestion.autoUpdate = false;
+
+                  # Option A: provide env vars directly
+                  programs.smart-suggestion.environment = {
+                     ZSH_OPENAI_API_KEY = "...";
+                     # SMART_SUGGESTION_AI_PROVIDER = "openai";
+                  };
+
+                  # Option B: source a shell env file (recommended for secrets)
+                  # programs.smart-suggestion.environmentFile = "${config.home.homeDirectory}/.config/smart-suggestion/env";
+               })
+            ];
+         };
+      };
+}
+```
+
+Notes:
+ - For Option B, put your API keys into `~/.config/smart-suggestion/env`:
+   ```sh
+   ZSH_OPENAI_API_KEY="your-openai-api-key"
+   ```
+
 ### Method 1: Quick Install (Recommended)
 
 The easiest way to install smart-suggestion is using our installation script:
@@ -205,12 +251,12 @@ Configure the plugin behavior with these environment variables:
 | `SMART_SUGGESTION_SYSTEM_PROMPT`   | Custom system prompt                  | Built-in      | Any string                                                  |
 | `SMART_SUGGESTION_AUTO_UPDATE`     | Enable automatic update checking      | `true`        | `true`, `false`                                             |
 | `SMART_SUGGESTION_UPDATE_INTERVAL` | Days between update checks            | 7             | Any positive integer                                        |
-| `SMART_SUGGESTION_BINARY`          | Path to the `smart_suggestion` binary | Auto-detected | Any valid filepath to a valid `smart_suggestion` binary     |
+| `SMART_SUGGESTION_BINARY`          | Path to the `smart-suggestion` binary | Auto-detected | Any valid filepath to a valid `smart-suggestion` binary     |
 
 If `SMART_SUGGESTION_BINARY` is not specified, we look for one in the following locations:
 
-1. `smart_suggestion` beside the current `smart-suggestion.plugin.zsh`
-1. `~/.config/smart-suggestion/smart_suggestion`
+1. `smart-suggestion` beside the current `smart-suggestion.plugin.zsh`
+1. `~/.config/smart-suggestion/smart-suggestion`
 
 ### Advanced Configuration
 
