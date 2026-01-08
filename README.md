@@ -160,35 +160,35 @@ You need an API key for at least one of the supported AI providers:
 #### OpenAI (default)
 
 ```bash
-export OPENAI_API_KEY="your-openai-api-key"
+export ZSH_OPENAI_API_KEY="your-openai-api-key"
 ```
 
 #### Azure OpenAI
 
 ```bash
-export AZURE_OPENAI_API_KEY="your-azure-openai-api-key" # i.e. c0123456789012345678901234567890
-export AZURE_OPENAI_RESOURCE_NAME="your-azure-openai-resource-name" # i.e. awesome-corp when your endpoint is https://awesome-corp.openai.azure.com
-export AZURE_OPENAI_DEPLOYMENT_NAME="your-deployment-name" # i.e. gpt-4o
-export AZURE_OPENAI_API_VERSION="2024-10-21"  # Optional, defaults to 2024-10-21
-export AZURE_OPENAI_BASE_URL="https://your-azure-openai-base-url" # Optional, default to https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com
+export ZSH_AZURE_OPENAI_API_KEY="your-azure-openai-api-key" # i.e. c0123456789012345678901234567890
+export ZSH_AZURE_OPENAI_RESOURCE_NAME="your-azure-openai-resource-name" # i.e. awesome-corp when your endpoint is https://awesome-corp.openai.azure.com
+export ZSH_AZURE_OPENAI_DEPLOYMENT_NAME="your-deployment-name" # i.e. gpt-4o
+export ZSH_AZURE_OPENAI_API_VERSION="2024-10-21"  # Optional, defaults to 2024-10-21
+export ZSH_AZURE_OPENAI_BASE_URL="https://your-azure-openai-base-url" # Optional, default to https://$ZSH_AZURE_OPENAI_RESOURCE_NAME.openai.azure.com
 ```
 
 #### Anthropic Claude
 
 ```bash
-export ANTHROPIC_API_KEY="your-anthropic-api-key"
+export ZSH_ANTHROPIC_API_KEY="your-anthropic-api-key"
 ```
 
 #### Google Gemini
 
 ```bash
-export GEMINI_API_KEY="your-gemini-api-key"
+export ZSH_GEMINI_API_KEY="your-gemini-api-key"
 ```
 
 #### DeepSeek
 
 ```bash
-export DEEPSEEK_API_KEY="your-deepseek-api-key"
+export ZSH_DEEPSEEK_API_KEY="your-deepseek-api-key"
 ```
 
 ### Environment Variables
@@ -217,17 +217,18 @@ If `SMART_SUGGESTION_BINARY` is not specified, we look for one in the following 
 #### Custom API URLs
 
 ```bash
-export OPENAI_BASE_URL="your-custom-openai-endpoint.com"
-export AZURE_OPENAI_BASE_URL="your-custom-azure-openai-endpoint.com"
-export ANTHROPIC_BASE_URL="your-custom-anthropic-endpoint.com"
-export GEMINI_BASE_URL="your-custom-gemini-endpoint.com"
-export DEEPSEEK_BASE_URL="your-custom-deepseek-endpoint.com"
+export ZSH_OPENAI_BASE_URL="your-custom-openai-endpoint.com"
+export ZSH_AZURE_OPENAI_BASE_URL="your-custom-azure-openai-endpoint.com"
+export ZSH_ANTHROPIC_BASE_URL="your-custom-anthropic-endpoint.com"
+export ZSH_GEMINI_BASE_URL="your-custom-gemini-endpoint.com"
+export ZSH_DEEPSEEK_BASE_URL="your-custom-deepseek-endpoint.com"
 ```
 
 #### Custom Models
 
 ```bash
-export GEMINI_MODEL="gemini-1.5-pro"  # Default: gemini-1.5-flash
+export ZSH_GEMINI_MODEL="gemini-1.5-pro"  # Default: gemini-2.5-flash
+export ZSH_DEEPSEEK_MODEL="deepseek-chat"  # Default: deepseek-chat
 ```
 
 #### History Lines for Context

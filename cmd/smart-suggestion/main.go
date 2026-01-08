@@ -262,6 +262,13 @@ var (
 	Arch      = "unknown"
 )
 
+func getenvLLM(name string) string {
+	if v := os.Getenv("ZSH_" + name); v != "" {
+		return v
+	}
+	return os.Getenv(name)
+}
+
 var (
 	provider     string
 	input        string
@@ -449,12 +456,12 @@ func runFetch(cmd *cobra.Command, args []string) {
 }
 
 func fetchOpenAI() (string, error) {
-	apiKey := os.Getenv("OPENAI_API_KEY")
+	apiKey := getenvLLM("OPENAI_API_KEY")
 	if apiKey == "" {
-		return "", fmt.Errorf("OPENAI_API_KEY environment variable is not set")
+		return "", fmt.Errorf("ZSH_OPENAI_API_KEY (or OPENAI_API_KEY) environment variable is not set")
 	}
 
-	baseURL := os.Getenv("OPENAI_BASE_URL")
+	baseURL := getenvLLM("OPENAI_BASE_URL")
 	if baseURL == "" {
 		baseURL = "https://api.openai.com"
 	}
@@ -538,24 +545,24 @@ func fetchOpenAI() (string, error) {
 }
 
 func fetchAzureOpenAI() (string, error) {
-	apiKey := os.Getenv("AZURE_OPENAI_API_KEY")
+	apiKey := getenvLLM("AZURE_OPENAI_API_KEY")
 	if apiKey == "" {
-		return "", fmt.Errorf("AZURE_OPENAI_API_KEY environment variable is not set")
+		return "", fmt.Errorf("ZSH_AZURE_OPENAI_API_KEY (or AZURE_OPENAI_API_KEY) environment variable is not set")
 	}
 
 	// Get deployment name - required for both custom and standard URLs
-	deploymentName := os.Getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+	deploymentName := getenvLLM("AZURE_OPENAI_DEPLOYMENT_NAME")
 	if deploymentName == "" {
-		return "", fmt.Errorf("AZURE_OPENAI_DEPLOYMENT_NAME environment variable is not set")
+		return "", fmt.Errorf("ZSH_AZURE_OPENAI_DEPLOYMENT_NAME (or AZURE_OPENAI_DEPLOYMENT_NAME) environment variable is not set")
 	}
 
 	// Check if custom base URL is provided
-	baseURL := os.Getenv("AZURE_OPENAI_BASE_URL")
+	baseURL := getenvLLM("AZURE_OPENAI_BASE_URL")
 	var url string
 
 	if baseURL != "" {
 		// Custom base URL provided - use it directly
-		apiVersion := os.Getenv("AZURE_OPENAI_API_VERSION")
+		apiVersion := getenvLLM("AZURE_OPENAI_API_VERSION")
 		if apiVersion == "" {
 			apiVersion = "2024-10-21" // Default to latest stable version
 		}
@@ -571,13 +578,13 @@ func fetchAzureOpenAI() (string, error) {
 		}
 	} else {
 		// Standard Azure OpenAI format - requires resource name and deployment name
-		resourceName := os.Getenv("AZURE_OPENAI_RESOURCE_NAME")
+		resourceName := getenvLLM("AZURE_OPENAI_RESOURCE_NAME")
 		if resourceName == "" {
-			return "", fmt.Errorf("AZURE_OPENAI_RESOURCE_NAME environment variable is not set")
+			return "", fmt.Errorf("ZSH_AZURE_OPENAI_RESOURCE_NAME (or AZURE_OPENAI_RESOURCE_NAME) environment variable is not set")
 		}
 
 		// API version for Azure OpenAI
-		apiVersion := os.Getenv("AZURE_OPENAI_API_VERSION")
+		apiVersion := getenvLLM("AZURE_OPENAI_API_VERSION")
 		if apiVersion == "" {
 			apiVersion = "2024-10-21" // Default to latest stable version
 		}
@@ -656,12 +663,12 @@ func fetchAzureOpenAI() (string, error) {
 }
 
 func fetchAnthropic() (string, error) {
-	apiKey := os.Getenv("ANTHROPIC_API_KEY")
+	apiKey := getenvLLM("ANTHROPIC_API_KEY")
 	if apiKey == "" {
-		return "", fmt.Errorf("ANTHROPIC_API_KEY environment variable is not set")
+		return "", fmt.Errorf("ZSH_ANTHROPIC_API_KEY (or ANTHROPIC_API_KEY) environment variable is not set")
 	}
 
-	baseURL := os.Getenv("ANTHROPIC_BASE_URL")
+	baseURL := getenvLLM("ANTHROPIC_BASE_URL")
 	if baseURL == "" {
 		baseURL = "https://api.anthropic.com"
 	}
@@ -948,17 +955,17 @@ func getUserID() (string, error) {
 }
 
 func fetchGemini() (string, error) {
-	apiKey := os.Getenv("GEMINI_API_KEY")
+	apiKey := getenvLLM("GEMINI_API_KEY")
 	if apiKey == "" {
-		return "", fmt.Errorf("GEMINI_API_KEY environment variable is not set")
+		return "", fmt.Errorf("ZSH_GEMINI_API_KEY (or GEMINI_API_KEY) environment variable is not set")
 	}
 
-	baseURL := os.Getenv("GEMINI_BASE_URL")
+	baseURL := getenvLLM("GEMINI_BASE_URL")
 	if baseURL == "" {
 		baseURL = "https://generativelanguage.googleapis.com"
 	}
 
-	model := os.Getenv("GEMINI_MODEL")
+	model := getenvLLM("GEMINI_MODEL")
 	if model == "" {
 		model = "gemini-2.5-flash"
 	}
@@ -1782,12 +1789,12 @@ func runRotateLogs(cmd *cobra.Command, args []string) {
 }
 
 func fetchDeepSeek() (string, error) {
-	apiKey := os.Getenv("DEEPSEEK_API_KEY")
+	apiKey := getenvLLM("DEEPSEEK_API_KEY")
 	if apiKey == "" {
-		return "", fmt.Errorf("DEEPSEEK_API_KEY environment variable is not set")
+		return "", fmt.Errorf("ZSH_DEEPSEEK_API_KEY (or DEEPSEEK_API_KEY) environment variable is not set")
 	}
 
-	baseURL := os.Getenv("DEEPSEEK_BASE_URL")
+	baseURL := getenvLLM("DEEPSEEK_BASE_URL")
 	if baseURL == "" {
 		baseURL = "https://api.deepseek.com"
 	}
@@ -1804,7 +1811,7 @@ func fetchDeepSeek() (string, error) {
 	}
 
 	// Get model from environment or use default
-	model := os.Getenv("DEEPSEEK_MODEL")
+	model := getenvLLM("DEEPSEEK_MODEL")
 	if model == "" {
 		model = "deepseek-chat" // Default to deepseek-chat which points to DeepSeek-V3-0324
 	}

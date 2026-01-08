@@ -25,18 +25,18 @@
 
 # New option to select AI provider
 if [[ -z "$SMART_SUGGESTION_AI_PROVIDER" ]]; then
-    if [[ -n "$OPENAI_API_KEY" ]]; then
+    if [[ -n "${ZSH_OPENAI_API_KEY:-$OPENAI_API_KEY}" ]]; then
         typeset -g SMART_SUGGESTION_AI_PROVIDER="openai"
-    elif [[ -n "$AZURE_OPENAI_API_KEY" && -n "$AZURE_OPENAI_RESOURCE_NAME" && -n "$AZURE_OPENAI_DEPLOYMENT_NAME" ]]; then
+    elif [[ -n "${ZSH_AZURE_OPENAI_API_KEY:-$AZURE_OPENAI_API_KEY}" && -n "${ZSH_AZURE_OPENAI_RESOURCE_NAME:-$AZURE_OPENAI_RESOURCE_NAME}" && -n "${ZSH_AZURE_OPENAI_DEPLOYMENT_NAME:-$AZURE_OPENAI_DEPLOYMENT_NAME}" ]]; then
         typeset -g SMART_SUGGESTION_AI_PROVIDER="azure_openai"
-    elif [[ -n "$ANTHROPIC_API_KEY" ]]; then
+    elif [[ -n "${ZSH_ANTHROPIC_API_KEY:-$ANTHROPIC_API_KEY}" ]]; then
         typeset -g SMART_SUGGESTION_AI_PROVIDER="anthropic"
-    elif [[ -n "$GEMINI_API_KEY" ]]; then
+    elif [[ -n "${ZSH_GEMINI_API_KEY:-$GEMINI_API_KEY}" ]]; then
         typeset -g SMART_SUGGESTION_AI_PROVIDER="gemini"
-    elif [[ -n "$DEEPSEEK_API_KEY" ]]; then
+    elif [[ -n "${ZSH_DEEPSEEK_API_KEY:-$DEEPSEEK_API_KEY}" ]]; then
         typeset -g SMART_SUGGESTION_AI_PROVIDER="deepseek"
     else
-        echo "No AI provider selected. Please set either OPENAI_API_KEY, AZURE_OPENAI_API_KEY (with AZURE_OPENAI_RESOURCE_NAME and AZURE_OPENAI_DEPLOYMENT_NAME), ANTHROPIC_API_KEY, GEMINI_API_KEY, or DEEPSEEK_API_KEY."
+        echo "No AI provider selected. Please set either ZSH_OPENAI_API_KEY, ZSH_AZURE_OPENAI_API_KEY (with ZSH_AZURE_OPENAI_RESOURCE_NAME and ZSH_AZURE_OPENAI_DEPLOYMENT_NAME), ZSH_ANTHROPIC_API_KEY, ZSH_GEMINI_API_KEY, or ZSH_DEEPSEEK_API_KEY (legacy non-ZSH_ names are also accepted)."
         return 1
     fi
 fi
