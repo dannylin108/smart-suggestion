@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# Allow completely disabling the plugin (e.g., in VSCode integrated terminal)
+[[ "$SMART_SUGGESTION_DISABLED" == "true" ]] && return 0
+
 # Default key binding
 (( ! ${+SMART_SUGGESTION_KEY} )) &&
     typeset -g SMART_SUGGESTION_KEY='^o'
